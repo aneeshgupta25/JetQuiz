@@ -55,6 +55,7 @@ dependencies {
 
     val viewmodelVersion = "2.6.1"
     val hiltVersion = "2.44"
+    val constraintLayoutVersion = "1.0.1"
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -93,6 +94,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     // GSON Converter
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    //constraint layout
+    implementation("androidx.constraintlayout:constraintlayout-compose:$constraintLayoutVersion")
 
 }
 
