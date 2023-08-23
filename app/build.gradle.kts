@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.jetquiz"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.jetquiz"
@@ -96,6 +96,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //constraint layout
     implementation("androidx.constraintlayout:constraintlayout-compose:$constraintLayoutVersion")
+    //material icons
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
 }
 
