@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.jetquiz.components.NextButton
 import com.example.jetquiz.data.CategoryList
 import com.example.jetquiz.model.Category
 import com.example.jetquiz.util.AppColors
@@ -58,7 +61,13 @@ fun ChoseCategory(
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center)
             },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(AppColors.Purple))
+                modifier = Modifier.padding(horizontal = 10.dp),
+                navigationIcon = {
+                    Icon(imageVector = Icons.Default.KeyboardArrowLeft,
+                        contentDescription = "Navigate back",
+                        tint = Color.White)
+                },
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(AppColors.Purple))
         },
         containerColor = AppColors.Purple
     ) {
@@ -91,26 +100,7 @@ fun ChoseCategory(
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp),
-                        shape = RoundedCornerShape(corner = CornerSize(20.dp)),
-                        colors = CardDefaults.cardColors(AppColors.Purple)
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "NEXT",
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                color = Color.White,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                    }
+                    NextButton()
                 }
             }
         }
