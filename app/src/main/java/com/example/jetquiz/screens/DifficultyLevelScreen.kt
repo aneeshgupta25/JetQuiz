@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -180,7 +181,7 @@ fun DifficultyLevelCard(
 
                 height = Dimension.fillToConstraints
                 width = Dimension.fillToConstraints
-            }.clickable {
+            }.noRippleClickable {
                 onClick.invoke(level)
             },
             colors = CardDefaults.cardColors(
@@ -217,8 +218,16 @@ fun DifficultyLevelCard(
             Image(painter = painterResource(
                 id = if(selectedLevel == level) selectedImage else unselectedImage
             ),
+                modifier = Modifier.noRippleClickable {onClick.invoke(level)},
                 contentDescription = "",
                 contentScale = ContentScale.FillBounds)
         }
+    }
+}
+
+fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
+    clickable(indication = null,
+        interactionSource = remember { MutableInteractionSource() }) {
+        onClick()
     }
 }
