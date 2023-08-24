@@ -20,11 +20,12 @@ import com.example.jetquiz.util.AppColors
 
 @Composable
 fun NextButton(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    text: String = "NEXT",
     onClick: ()->Unit = {}
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .height(60.dp),
         shape = RoundedCornerShape(corner = CornerSize(20.dp)),
         colors = CardDefaults.cardColors(AppColors.Purple)
@@ -34,7 +35,7 @@ fun NextButton(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "NEXT",
+                text = text,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = Color.White,
