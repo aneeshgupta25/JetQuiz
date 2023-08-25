@@ -56,6 +56,7 @@ import com.example.jetquiz.R
 import com.example.jetquiz.components.NextButton
 import com.example.jetquiz.util.AppColors
 import com.example.jetquiz.util.ScreenConfig
+import com.example.jetquiz.util.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
@@ -222,12 +223,5 @@ fun DifficultyLevelCard(
                 contentDescription = "",
                 contentScale = ContentScale.FillBounds)
         }
-    }
-}
-
-fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
-    clickable(indication = null,
-        interactionSource = remember { MutableInteractionSource() }) {
-        onClick()
     }
 }

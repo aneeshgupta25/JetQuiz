@@ -98,7 +98,8 @@ fun ConfirmQuiz(
                 ) {
                     Column(
                         modifier = Modifier.padding(10.dp).fillMaxHeight(),
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                        verticalArrangement = Arrangement.spacedBy(5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(text = theme.toUpperCase(),
                             style = MaterialTheme.typography.titleMedium,
@@ -190,7 +191,7 @@ fun ConfirmQuiz(
                             color = Color.Black)
                         Spacer(modifier = Modifier.weight(1f))
                         NextButton(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 60.dp),
+                            modifier = Modifier.fillMaxWidth(0.6f),
                             text = "PLAY!!"
                         )
                     }
