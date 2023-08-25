@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetquiz.data.CategoryList
 import com.example.jetquiz.data.DataOrException
+import com.example.jetquiz.model.Category
 import com.example.jetquiz.model.Question
 
 import com.example.jetquiz.repository.QuestionsRepository
@@ -24,6 +26,8 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
             DataOrException(null, true, Exception(""))
         )
 
+    var quizCategory: MutableState<Int?> = mutableStateOf(null)
+
 
     init {
         getAllQuestions()
@@ -39,5 +43,8 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
             }
         }
     }
+
+    fun getQuizCategories(): List<Category> = CategoryList.getCategories()
+    fun updateQuizCategory(category: Int?) { quizCategory.value = category }
 
 }

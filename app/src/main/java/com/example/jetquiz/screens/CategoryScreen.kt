@@ -29,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,19 +40,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.jetquiz.components.NextButton
 import com.example.jetquiz.data.CategoryList
 import com.example.jetquiz.model.Category
+import com.example.jetquiz.navigation.QuizScreens
 import com.example.jetquiz.util.AppColors
 import com.example.jetquiz.util.ScreenConfig
+import com.example.jetquiz.util.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+//@Preview
 @Composable
 fun CategoryScreen(
-    categoryList: List<Category> = CategoryList.getCategories()
+    viewModel: QuestionsViewModel,
+    navController: NavController
 ) {
-
+    var selectedCategoryState = remember { mutableStateOf<Int?>(null) }
+    val categoryList = viewModel.getQuizCategories()
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -95,12 +103,22 @@ fun CategoryScreen(
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             items(categoryList) { category->
-                                CategoryCard(icon = category.icon, text = category.category)
+                                CategoryCard(
+                                    category = category,
+                                    index = categoryList.indexOf(category),
+                                    selectedCategory = selectedCategoryState.value) {
+                                    selectedCategoryState.value = it
+                                }
                             }
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    NextButton()
+                    NextButton(
+                        enabled = selectedCategoryState.value != null
+                    ) {
+                        viewModel.updateQuizCategory(categoryList[selectedCategoryState.value!!].id)
+                        navController.navigate(QuizScreens.DifficultyLevelScreen.name)
+                    }
                 }
             }
         }
@@ -109,13 +127,22 @@ fun CategoryScreen(
 
 @Composable
 fun CategoryCard(
-    icon: ImageVector,
-    text: String
+    category: Category,
+    index: Int,
+    selectedCategory: Int?,
+    onClick: (Int)->Unit = {}
 ) {
     Card(
-        modifier = Modifier.height(120.dp),
+        modifier = Modifier.height(120.dp)
+            .noRippleClickable {
+                onClick.invoke(index)
+            },
         shape = RoundedCornerShape(corner = CornerSize(25.dp)),
-        colors = CardDefaults.cardColors(AppColors.VeryLightPurple),
+        colors =
+        if(selectedCategory == index)
+            CardDefaults.cardColors(AppColors.Pink)
+        else
+            CardDefaults.cardColors(AppColors.VeryLightPurple),
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -125,17 +152,23 @@ fun CategoryCard(
             Card(
                 modifier = Modifier.size(50.dp),
                 shape = RoundedCornerShape(corner = CornerSize(20.dp)),
-                colors = CardDefaults.cardColors(Color.White)
+                colors =
+                if(selectedCategory == index)
+                    CardDefaults.cardColors(AppColors.LightPink)
+                else
+                    CardDefaults.cardColors(Color.White)
             ) {
-                Icon(imageVector = icon, contentDescription = "icon",
+                Icon(imageVector = category.icon, contentDescription = "icon",
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(10.dp),
-                    tint = AppColors.Purple)
+                    tint = if(selectedCategory == index) Color.White
+                    else AppColors.Purple)
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Text(text = text, textAlign = TextAlign.Center,
-                color = AppColors.Purple,
+            Text(text = category.category, textAlign = TextAlign.Center,
+                color = if(selectedCategory == index) Color.White
+                else AppColors.Purple,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium)
         }
