@@ -61,7 +61,7 @@ import com.example.jetquiz.util.noRippleClickable
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun ChoseDifficultyLevel() {
+fun DifficultyLevelScreen() {
 
     var selectedLevel by remember {
         mutableIntStateOf(0)

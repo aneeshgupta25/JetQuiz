@@ -53,9 +53,9 @@ import com.example.jetquiz.model.QuestionItem
 import com.example.jetquiz.util.AppColors
 import com.example.jetquiz.util.noRippleClickable
 
-//@Preview
+@Preview
 @Composable
-fun QuizPlayground(
+fun QuizPlaygroundScreen(
     questionItem: QuestionItem = QuestionItem(
         category = "Hello",
         type =  "hello",
@@ -66,7 +66,7 @@ fun QuizPlayground(
     ),
     questionIndex: Int = 0,
     totalNumberOfQuestions: Int = 10,
-    viewModel: QuestionsViewModel,
+//    viewModel: QuestionsViewModel,
     onNextClicked: (Int)->Unit = {}
 ) {
 
@@ -204,7 +204,8 @@ fun QuizPlayground(
                 NextButton(
                     modifier = Modifier
                         .fillMaxWidth(0.3f)
-                        .height(50.dp)
+                        .height(50.dp),
+                    text = if(questionIndex+1 == totalNumberOfQuestions) "SUBMIT" else "NEXT"
                 ) {
                     onNextClicked.invoke(questionIndex)
                 }

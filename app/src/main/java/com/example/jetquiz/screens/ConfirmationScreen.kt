@@ -51,7 +51,7 @@ import com.example.jetquiz.util.ScreenConfig
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun ConfirmQuiz(
+fun ConfirmationScreen(
     theme: String = "SPORTS",
     level: String = "Newbie",
     numberOfQuestions: Int = 10,

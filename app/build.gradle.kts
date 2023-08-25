@@ -98,6 +98,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:$constraintLayoutVersion")
     //material icons
     implementation("androidx.compose.material:material-icons-extended:1.5.0")
+    //navigation
+    implementation("androidx.navigation:navigation-compose:2.7.1")
 
 }
 

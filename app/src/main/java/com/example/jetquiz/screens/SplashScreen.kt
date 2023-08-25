@@ -28,7 +28,7 @@ import com.example.jetquiz.util.ScreenConfig
 
 @Preview
 @Composable
-fun QuizSplash() {
+fun SplashScreen() {
 
     val screenHeight = ScreenConfig.getHeight()
     val screenWidth = ScreenConfig.getWidth()

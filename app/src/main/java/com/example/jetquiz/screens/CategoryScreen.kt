@@ -46,7 +46,7 @@ import com.example.jetquiz.util.ScreenConfig
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun ChoseCategory(
+fun CategoryScreen(
     categoryList: List<Category> = CategoryList.getCategories()
 ) {
 

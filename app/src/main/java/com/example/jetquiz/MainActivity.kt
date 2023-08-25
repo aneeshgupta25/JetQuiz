@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetquiz.components.QuizApp
+import com.example.jetquiz.navigation.QuizNavigation
 import com.example.jetquiz.screens.QuestionsViewModel
 import com.example.jetquiz.ui.theme.JetQuizTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    QuizApp()
+                    QuizNavigation()
                 }
             }
         }
