@@ -122,7 +122,7 @@ fun ResultScreen(
                 ) {
                     viewModel.resetQuiz()
                     navController.navigate(QuizScreens.CategoryScreen.name) {
-                        popUpTo(route = QuizScreens.SplashScreen.name) {
+                        popUpTo(route = QuizScreens.CategoryScreen.name) {
                             inclusive = true
                         }
                     }

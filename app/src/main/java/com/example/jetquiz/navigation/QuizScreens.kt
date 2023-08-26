@@ -5,6 +5,7 @@ enum class QuizScreens {
     CategoryScreen,
     DifficultyLevelScreen,
     ConfirmationScreen,
+    LoadingPlaygroundScreen,
     QuizPlaygroundScreen,
     ResultScreen;
 
@@ -15,6 +16,7 @@ enum class QuizScreens {
             CategoryScreen.name -> CategoryScreen
             DifficultyLevelScreen.name -> DifficultyLevelScreen
             ConfirmationScreen.name -> ConfirmationScreen
+            LoadingPlaygroundScreen.name -> LoadingPlaygroundScreen
             QuizPlaygroundScreen.name -> QuizPlaygroundScreen
             ResultScreen.name -> ResultScreen
             null -> CategoryScreen

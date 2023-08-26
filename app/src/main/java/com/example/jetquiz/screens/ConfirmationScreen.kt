@@ -207,7 +207,7 @@ fun ConfirmationScreen(
                             modifier = Modifier.fillMaxWidth(0.6f),
                             text = "PLAY!!"
                         ) {
-                            navController.navigate(QuizScreens.QuizPlaygroundScreen.name)
+                            navController.navigate(QuizScreens.LoadingPlaygroundScreen.name)
                             viewModel.getAllQuestions()
                         }
                     }

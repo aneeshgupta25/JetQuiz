@@ -54,6 +54,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
+import com.example.jetquiz.R
+import com.example.jetquiz.components.AlertDialog
 import com.example.jetquiz.components.CircularTimer
 import com.example.jetquiz.components.CircularTimerScreen
 import com.example.jetquiz.components.NextButton
@@ -70,12 +73,14 @@ fun QuizPlaygroundScreen(
     navController: NavController,
 ) {
 
-    if(viewModel.data.value.loading == true) {
-        LoadingPlayground()
-    } else {
-        PlaygroundLoaded(viewModel = viewModel,
-            navController = navController)
-    }
+    PlaygroundLoaded(viewModel = viewModel, navController = navController)
+
+//    if(viewModel.data.value.loading == true) {
+//        LoadingPlayground()
+//    } else {
+//        PlaygroundLoaded(viewModel = viewModel,
+//            navController = navController)
+//    }
 //    val questionsList = remember(questionItem) {
 //        getQuestionsList(questionItem)
 //    }
@@ -131,51 +136,21 @@ fun NumberOfQuestionsSolvedIndicator(modifier: Modifier,
     }
 }
 
-fun getOptionsList(questionItem: QuestionItem): List<String> {
-    val incorrectOptions = questionItem.incorrect_answers
-    val randomIndex = (0..incorrectOptions.size).random()
+fun getOptionsList(questionItem: QuestionItem?): List<String> {
+    val incorrectOptions = questionItem?.incorrect_answers
+    val randomIndex = (0..incorrectOptions!!.size).random()
 
     val part1 = incorrectOptions.subList(0, randomIndex)
     val part2 = incorrectOptions.subList(randomIndex, incorrectOptions.size)
 
     val newList = mutableListOf<String>()
     newList.addAll(part1)
-    newList.add(questionItem.correct_answer)
+    if (questionItem != null) {
+        newList.add(questionItem.correct_answer)
+    }
     newList.addAll(part2)
 
     return newList.toList()
-}
-
-@Preview
-@Composable
-fun LoadingPlayground() {
-    Box(modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppColors.Purple),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator(
-                color = AppColors.LightPink,
-                strokeWidth = 5.dp
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(
-                "Loading the Playground...",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.displayMedium,
-                color = Color.White
-            )
-        }
-        BackHandler(
-            enabled = true
-        ) {}
-    }
 }
 
 @Composable
@@ -199,15 +174,17 @@ fun PlaygroundLoaded(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            NavigatingIcons(text = "EXIT")
+            NavigatingIcons(text = "EXIT") {
+                viewModel.showDialog()
+            }
             NumberOfQuestionsSolvedIndicator(
                 modifier = Modifier.fillMaxWidth(0.6f),
-                totalNumberOfQuestions = questionsList!!.size,
+                totalNumberOfQuestions = viewModel.quizTotalNumberOfQuestion.value,
                 numberOfQuestionsCompleted = questionIndex.value+1
             )
             NavigatingIcons(text = "SKIP") {
                 viewModel.skipped.value += 1
-                if(questionIndex.value == (questionsList.size - 1)) {
+                if(questionIndex.value == (viewModel.quizTotalNumberOfQuestion.value - 1)) {
                     navController.navigate(QuizScreens.ResultScreen.name)
                 } else {
                     questionIndex.value += 1
@@ -226,10 +203,10 @@ fun PlaygroundLoaded(
             DisplayQuestion(
                 viewModel = viewModel,
                 questionIndex = questionIndex.value,
-                questionItem = questionsList!![questionIndex.value],
-                totalNumberOfQuestions = questionsList.size
+                questionItem = questionsList?.get(questionIndex.value),
+                totalNumberOfQuestions = viewModel.quizTotalNumberOfQuestion.value
             ) {
-                if(questionIndex.value == (questionsList.size - 1)) {
+                if(questionIndex.value == (viewModel.quizTotalNumberOfQuestion.value - 1)) {
                     navController.navigate(QuizScreens.ResultScreen.name)
                 } else {
                     questionIndex.value += 1
@@ -237,13 +214,39 @@ fun PlaygroundLoaded(
             }
         }
     }
+    if(viewModel.showAlertDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.hideDialog()
+            },
+            onPositiveRequest = {
+                viewModel.hideDialog()
+            },
+            onNegativeRequest = {
+                viewModel.hideDialog()
+                navController.navigate(
+                    QuizScreens.CategoryScreen.name
+                ) {
+                    popUpTo(route = QuizScreens.CategoryScreen.name) {
+                        inclusive = true
+                    }
+                }
+                viewModel.resetQuiz()
+            }
+        )
+    }
+    BackHandler(
+        enabled = true
+    ) {
+        viewModel.showDialog()
+    }
 }
 
 @Composable
 fun DisplayQuestion(
     viewModel: QuestionsViewModel,
     questionIndex: Int,
-    questionItem: QuestionItem,
+    questionItem: QuestionItem?,
     totalNumberOfQuestions: Int,
     onNextClicked: (Int) -> Unit
 ) {
@@ -269,7 +272,7 @@ fun DisplayQuestion(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelMedium,
             color = Color.Gray)
-        Text(text = Html.fromHtml(questionItem.question).toString(),
+        Text(text = Html.fromHtml(questionItem?.question).toString(),
             modifier = Modifier
                 .fillMaxWidth(),
             fontWeight = FontWeight.Bold,
@@ -327,7 +330,7 @@ fun DisplayQuestion(
             text = if(questionIndex+1 == totalNumberOfQuestions) "SUBMIT" else "NEXT"
         ) {
             if(selectedOptionIndex.value != null) {
-                if (optionsList[selectedOptionIndex.value!!] == questionItem.correct_answer) {
+                if (optionsList[selectedOptionIndex.value!!] == questionItem?.correct_answer) {
                     viewModel.correctAnswers.value += 1
                 } else {
                     viewModel.inCorrectAnswers.value += 1

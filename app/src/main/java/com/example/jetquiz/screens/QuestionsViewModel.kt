@@ -35,12 +35,15 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
     var correctAnswers: MutableState<Int> = mutableStateOf(0)
     var inCorrectAnswers: MutableState<Int> = mutableStateOf(0)
     var skipped: MutableState<Int> = mutableStateOf(0)
+    var showAlertDialog: MutableState<Boolean> = mutableStateOf(false)
+    var showToast: MutableState<Boolean> = mutableStateOf(false)
 
     init {
 //        getAllQuestions()
     }
 
     fun getAllQuestions() {
+        data.value = DataOrException(null, true, Exception(""))
         viewModelScope.launch {
             Log.d("TAG", "getAllQuestions: ${data}")
             data.value.loading = true
@@ -49,9 +52,15 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
                 category = quizCategoryId.value,
                 level = quizLevelString.value!!
             )
-            Log.d("TAG", "getAllQuestions: Message Received!")
-            if(data.value.data?.results.toString().isNotEmpty()) {
-                data.value.loading = false
+            if(data.value.data?.response_code == 1 || data.value.data?.results == null || data.value.data?.results!!.size == 0) {
+                data.value.loading = true
+                showToast.value = true
+            } else {
+                if (data.value.data?.results!!.isNotEmpty()) {
+                    data.value.loading = false
+                } else {
+                    showToast.value = true
+                }
             }
         }
     }
@@ -92,7 +101,7 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
     }
 
     fun resetQuiz() {
-        data.value = DataOrException(null, true, Exception(""))
+//        data.value = DataOrException(null, true, Exception(""))
         quizCategory.value = null
         quizCategoryId.value = null
         quizLevel.value = 0
@@ -101,6 +110,18 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
         correctAnswers.value = 0
         inCorrectAnswers.value = 0
         skipped.value = 0
+    }
+
+    fun showDialog() {
+        showAlertDialog.value = true
+    }
+
+    fun hideDialog() {
+        showAlertDialog.value = false
+    }
+
+    fun dismissToast() {
+        showToast.value = false
     }
 
 }

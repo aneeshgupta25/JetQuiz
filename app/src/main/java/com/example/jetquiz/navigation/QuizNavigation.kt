@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.jetquiz.screens.CategoryScreen
 import com.example.jetquiz.screens.ConfirmationScreen
 import com.example.jetquiz.screens.DifficultyLevelScreen
+import com.example.jetquiz.screens.LoadingPlaygroundScreen
 import com.example.jetquiz.screens.QuestionsViewModel
 import com.example.jetquiz.screens.QuizPlaygroundScreen
 import com.example.jetquiz.screens.ResultScreen
@@ -27,7 +28,11 @@ fun QuizNavigation() {
             SplashScreen()
             LaunchedEffect(true) {
                 delay(1000)
-                navController.navigate(QuizScreens.CategoryScreen.name)
+                navController.navigate(QuizScreens.CategoryScreen.name) {
+                    popUpTo(route = QuizScreens.SplashScreen.name) {
+                        inclusive = true
+                    }
+                }
             }
         }
         composable(route = QuizScreens.CategoryScreen.name) {
@@ -38,6 +43,9 @@ fun QuizNavigation() {
         }
         composable(route = QuizScreens.ConfirmationScreen.name) {
             ConfirmationScreen(viewModel = viewModel, navController = navController)
+        }
+        composable(route = QuizScreens.LoadingPlaygroundScreen.name) {
+            LoadingPlaygroundScreen(viewModel = viewModel, navController = navController)
         }
         composable(route = QuizScreens.QuizPlaygroundScreen.name) {
             QuizPlaygroundScreen(viewModel = viewModel, navController = navController)
