@@ -56,7 +56,7 @@ fun CategoryScreen(
     viewModel: QuestionsViewModel,
     navController: NavController
 ) {
-    var selectedCategoryState = remember { mutableStateOf<Int?>(null) }
+    var selectedCategoryState = viewModel.quizCategory.value
     val categoryList = viewModel.getQuizCategories()
     Scaffold(
         topBar = {
@@ -70,11 +70,6 @@ fun CategoryScreen(
                     textAlign = TextAlign.Center)
             },
                 modifier = Modifier.padding(horizontal = 10.dp),
-                navigationIcon = {
-                    Icon(imageVector = Icons.Default.KeyboardArrowLeft,
-                        contentDescription = "Navigate back",
-                        tint = Color.White)
-                },
                     colors = TopAppBarDefaults.mediumTopAppBarColors(AppColors.Purple))
         },
         containerColor = AppColors.Purple
@@ -106,17 +101,17 @@ fun CategoryScreen(
                                 CategoryCard(
                                     category = category,
                                     index = categoryList.indexOf(category),
-                                    selectedCategory = selectedCategoryState.value) {
-                                    selectedCategoryState.value = it
+                                    selectedCategory = selectedCategoryState) {
+                                    viewModel.quizCategory.value = it
                                 }
                             }
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     NextButton(
-                        enabled = selectedCategoryState.value != null
+                        enabled = selectedCategoryState != null
                     ) {
-                        viewModel.updateQuizCategory(categoryList[selectedCategoryState.value!!].id)
+                        viewModel.updateQuizCategory(selectedCategoryState)
                         navController.navigate(QuizScreens.DifficultyLevelScreen.name)
                     }
                 }

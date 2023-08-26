@@ -1,6 +1,7 @@
 package com.example.jetquiz.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,21 +44,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.jetquiz.R
 import com.example.jetquiz.components.NextButton
+import com.example.jetquiz.navigation.QuizScreens
 import com.example.jetquiz.util.AppColors
 import com.example.jetquiz.util.ScreenConfig
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+//@Preview
 @Composable
 fun ConfirmationScreen(
-    theme: String = "SPORTS",
-    level: String = "Newbie",
-    numberOfQuestions: Int = 10,
-    points: Int = 100
+    viewModel: QuestionsViewModel,
+    navController: NavController
 ) {
 
+    val quizTheme = viewModel.getQuizTheme()
+    val quizLevel = viewModel.getQuizLevel()
     val screenHeight = ScreenConfig.getHeight()
 
     Scaffold(
@@ -65,7 +68,7 @@ fun ConfirmationScreen(
             TopAppBar(title = {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "",
+                    text = "Quiz Details",
                     color = Color.White,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
@@ -75,6 +78,9 @@ fun ConfirmationScreen(
                 navigationIcon = {
                     Icon(imageVector = Icons.Default.KeyboardArrowLeft,
                         contentDescription = "Navigate back",
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                        },
                         tint = Color.White)
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(AppColors.Purple))
@@ -101,10 +107,12 @@ fun ConfirmationScreen(
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = theme.toUpperCase(),
+                        Text(text = quizTheme.uppercase(),
+                            modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Gray)
-                        Text(text = "$level Jet Quiz",
+                        Text(text = "$quizLevel Jet Quiz",
+                            modifier = Modifier.fillMaxWidth(),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.headlineSmall)
                         Card(
@@ -132,8 +140,10 @@ fun ConfirmationScreen(
                                             modifier = Modifier
                                                 .size(50.dp)
                                                 .weight(0.2f),
-                                            imageVector = Icons.Default.Remove)
-                                        Text(text = "$numberOfQuestions questions",
+                                            imageVector = Icons.Default.Remove) {
+                                            viewModel.deleteQuestion()
+                                        }
+                                        Text(text = "${viewModel.quizTotalNumberOfQuestion.value} questions",
                                             textAlign = TextAlign.Center,
                                             fontWeight = FontWeight.SemiBold,
                                             style = MaterialTheme.typography.titleLarge,
@@ -142,7 +152,9 @@ fun ConfirmationScreen(
                                             modifier = Modifier
                                                 .size(50.dp)
                                                 .weight(0.2f),
-                                            imageVector = Icons.Default.Add)
+                                            imageVector = Icons.Default.Add) {
+                                            viewModel.addQuestion()
+                                        }
                                     }
                                 }
                                 Divider(
@@ -184,16 +196,20 @@ fun ConfirmationScreen(
                             }
                         }
                         Text(text = "Description",
+                            modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Gray)
-                        Text(text = "Any time is a good time for a quiz and even better if that happens to be a $theme themed quiz!!",
+                        Text(text = "Any time is a good time for a quiz and even better if that happens to be a $quizTheme themed quiz!!",
                             style = MaterialTheme.typography.titleMedium,
                             color = Color.Black)
                         Spacer(modifier = Modifier.weight(1f))
                         NextButton(
                             modifier = Modifier.fillMaxWidth(0.6f),
                             text = "PLAY!!"
-                        )
+                        ) {
+                            navController.navigate(QuizScreens.QuizPlaygroundScreen.name)
+                            viewModel.getAllQuestions()
+                        }
                     }
                 }
             }
@@ -205,9 +221,10 @@ fun ConfirmationScreen(
 fun ConfirmQuizIcon(
     modifier: Modifier = Modifier,
     imageVector: ImageVector,
-    color: Color = AppColors.Pink
+    color: Color = AppColors.Pink,
+    onClick: () -> Unit
 ) {
-    IconButton(onClick = { /*TODO*/ }) {
+    IconButton(onClick = onClick) {
         Surface(
             modifier = modifier,
             shape = CircleShape,

@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetquiz.util.AppColors
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 
 @Preview(showBackground = true)
@@ -76,18 +77,21 @@ fun CircularTimer(
 
 @Composable
 fun CircularTimerScreen(
+    questionIndex: Int,
     onTimerFinished: ()->Unit = {}
 ) {
     var timerProgress by remember { mutableStateOf(0f) }
     var timerCount by remember { mutableStateOf(20) }
-    LaunchedEffect(true) {
+    LaunchedEffect(questionIndex) {
+        timerProgress = 0f
+        timerCount = 20
         delay(1000)
         while (timerProgress < 1f) {
             timerProgress += 0.05f
             timerCount -= 1
             delay(1000) // Adjust delay to change the speed of progress
         }
-        if(timerProgress == 1f) onTimerFinished.invoke()
+        if(timerProgress >= 1f) onTimerFinished()
     }
 
     CircularTimer(progress = timerProgress, timerCount = timerCount)

@@ -52,20 +52,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavController
 import com.example.jetquiz.R
 import com.example.jetquiz.components.NextButton
+import com.example.jetquiz.navigation.QuizScreens
 import com.example.jetquiz.util.AppColors
 import com.example.jetquiz.util.ScreenConfig
 import com.example.jetquiz.util.noRippleClickable
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+//@Preview
 @Composable
-fun DifficultyLevelScreen() {
+fun DifficultyLevelScreen(
+    viewModel: QuestionsViewModel,
+    navController: NavController
+) {
 
-    var selectedLevel by remember {
-        mutableIntStateOf(0)
-    }
+    var selectedLevel = viewModel.quizLevel.value
 
     Scaffold(
         topBar = {
@@ -82,6 +85,9 @@ fun DifficultyLevelScreen() {
                 navigationIcon = {
                     Icon(imageVector = Icons.Default.KeyboardArrowLeft,
                         contentDescription = "Navigate back",
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                        },
                         tint = Color.White)
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(AppColors.Purple))
@@ -116,7 +122,7 @@ fun DifficultyLevelScreen() {
                             unselectedImage = R.drawable.easy_level_purple,
                             selectedImage = R.drawable.easy_level_pink,
                             selectedLevel = selectedLevel
-                        ) { selectedLevel = it }
+                        ) { viewModel.updateQuizLevel(it) }
                         DifficultyLevelCard(
                             level = 2,
                             headLine = "Continuing",
@@ -124,7 +130,7 @@ fun DifficultyLevelScreen() {
                             unselectedImage = R.drawable.medium_level_purple,
                             selectedImage = R.drawable.medium_level_pink,
                             selectedLevel = selectedLevel
-                        ) { selectedLevel = it }
+                        ) { viewModel.updateQuizLevel(it)}
                         DifficultyLevelCard(
                             level = 3,
                             headLine = "Experienced",
@@ -132,9 +138,14 @@ fun DifficultyLevelScreen() {
                             unselectedImage = R.drawable.hard_level_purple,
                             selectedImage = R.drawable.hard_level_pink,
                             selectedLevel = selectedLevel
-                        ) { selectedLevel = it }
+                        ) { viewModel.updateQuizLevel(it) }
                     }
-                    NextButton()
+                    NextButton(
+                        enabled = selectedLevel != 0
+                    ) {
+                        viewModel.updateQuizLevel(selectedLevel)
+                        navController.navigate(QuizScreens.ConfirmationScreen.name)
+                    }
                 }
             }
         }
@@ -148,7 +159,7 @@ fun DifficultyLevelCard(
     tagLine: String,
     unselectedImage: Int = R.drawable.easy_level_purple,
     selectedImage: Int = R.drawable.easy_level_purple,
-    selectedLevel: Int,
+    selectedLevel: Int?,
     onClick: (Int) -> Unit = {}
 ) {
 

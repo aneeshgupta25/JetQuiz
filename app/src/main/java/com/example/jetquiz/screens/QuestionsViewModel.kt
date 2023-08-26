@@ -25,26 +25,82 @@ class QuestionsViewModel @Inject constructor(private val repository: QuestionsRe
         mutableStateOf(
             DataOrException(null, true, Exception(""))
         )
+    var listOfQuizCategory = CategoryList.getCategories()
 
     var quizCategory: MutableState<Int?> = mutableStateOf(null)
-
+    var quizCategoryId: MutableState<Int?> = mutableStateOf(null)
+    var quizLevel: MutableState<Int?> = mutableStateOf(0)
+    var quizLevelString: MutableState<String?> = mutableStateOf(null)
+    var quizTotalNumberOfQuestion: MutableState<Int> = mutableStateOf(10)
+    var correctAnswers: MutableState<Int> = mutableStateOf(0)
+    var inCorrectAnswers: MutableState<Int> = mutableStateOf(0)
+    var skipped: MutableState<Int> = mutableStateOf(0)
 
     init {
-        getAllQuestions()
+//        getAllQuestions()
     }
 
-    private fun getAllQuestions() {
+    fun getAllQuestions() {
         viewModelScope.launch {
             Log.d("TAG", "getAllQuestions: ${data}")
             data.value.loading = true
-            data.value = repository.getAllQuestions()
-            if(data.value.data.toString().isNotEmpty()) {
+            data.value = repository.getAllQuestions(
+                amount = quizTotalNumberOfQuestion.value,
+                category = quizCategoryId.value,
+                level = quizLevelString.value!!
+            )
+            Log.d("TAG", "getAllQuestions: Message Received!")
+            if(data.value.data?.results.toString().isNotEmpty()) {
                 data.value.loading = false
             }
         }
     }
 
-    fun getQuizCategories(): List<Category> = CategoryList.getCategories()
-    fun updateQuizCategory(category: Int?) { quizCategory.value = category }
+    fun getQuizCategories(): List<Category> = listOfQuizCategory
+    fun updateQuizCategory(category: Int?) {
+        quizCategory.value = category
+        quizCategoryId.value = listOfQuizCategory[category!!].id
+    }
+    fun updateQuizLevel(level: Int?) {
+        quizLevel.value = level
+        when(level) {
+            1 -> quizLevelString.value = "easy"
+            2 -> quizLevelString.value = "medium"
+            3 -> quizLevelString.value = "hard"
+            else -> null
+        }
+    }
+
+    fun getQuizTheme(): String {
+        return listOfQuizCategory[quizCategory.value!!].category
+    }
+
+    fun getQuizLevel(): String? {
+        if(quizLevel.value == 1) return "Newbie"
+        else if(quizLevel.value == 2) return "Continuing"
+        else if(quizLevel.value == 3) return "Experienced"
+        else return null
+    }
+
+    fun addQuestion() {
+        quizTotalNumberOfQuestion.value += 1
+    }
+
+    fun deleteQuestion() {
+        if(quizTotalNumberOfQuestion.value > 1)
+            quizTotalNumberOfQuestion.value -= 1
+    }
+
+    fun resetQuiz() {
+        data.value = DataOrException(null, true, Exception(""))
+        quizCategory.value = null
+        quizCategoryId.value = null
+        quizLevel.value = 0
+        quizLevelString.value = null
+        quizTotalNumberOfQuestion.value = 10
+        correctAnswers.value = 0
+        inCorrectAnswers.value = 0
+        skipped.value = 0
+    }
 
 }

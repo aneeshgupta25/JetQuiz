@@ -5,7 +5,8 @@ enum class QuizScreens {
     CategoryScreen,
     DifficultyLevelScreen,
     ConfirmationScreen,
-    QuizPlaygroundScreen;
+    QuizPlaygroundScreen,
+    ResultScreen;
 
     companion object {
         fun fromRoute(route: String?): QuizScreens
@@ -15,6 +16,7 @@ enum class QuizScreens {
             DifficultyLevelScreen.name -> DifficultyLevelScreen
             ConfirmationScreen.name -> ConfirmationScreen
             QuizPlaygroundScreen.name -> QuizPlaygroundScreen
+            ResultScreen.name -> ResultScreen
             null -> CategoryScreen
             else -> throw IllegalArgumentException("Route $route not recognised")
         }

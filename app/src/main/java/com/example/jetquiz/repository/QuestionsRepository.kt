@@ -14,14 +14,17 @@ class QuestionsRepository @Inject constructor(private val api: QuestionsAPI) {
             Boolean,
             Exception>()
 
-    suspend fun getAllQuestions(): DataOrException<Question, Boolean, Exception> {
+    suspend fun getAllQuestions(
+        amount: Int,
+        category: Int?,
+        level: String,
+    ): DataOrException<Question, Boolean, Exception> {
         try {
             dataOrException.loading = true
             dataOrException.data = api.getAllQuestions(
-                11,
-                11,
-                "easy",
-                "multiple"
+                amount = amount,
+                category = category,
+                difficulty = level
             )
             if(dataOrException.data.toString().isNotEmpty()) dataOrException.loading = false
         } catch(exception: Exception) {

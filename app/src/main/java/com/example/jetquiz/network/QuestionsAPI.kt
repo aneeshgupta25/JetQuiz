@@ -12,9 +12,8 @@ interface QuestionsAPI {
     @GET("api.php")
     suspend fun getAllQuestions(
         @Query("amount") amount: Int,
-        @Query("category") category: Int,
+        @Query("category") category: Int?,
         @Query("difficulty") difficulty: String,
-        @Query("type") type: String,
     ): Question
 
 }

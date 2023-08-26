@@ -12,6 +12,7 @@ import com.example.jetquiz.screens.ConfirmationScreen
 import com.example.jetquiz.screens.DifficultyLevelScreen
 import com.example.jetquiz.screens.QuestionsViewModel
 import com.example.jetquiz.screens.QuizPlaygroundScreen
+import com.example.jetquiz.screens.ResultScreen
 import com.example.jetquiz.screens.SplashScreen
 import kotlinx.coroutines.delay
 
@@ -25,7 +26,7 @@ fun QuizNavigation() {
         composable(route = QuizScreens.SplashScreen.name) {
             SplashScreen()
             LaunchedEffect(true) {
-                delay(3000)
+                delay(1000)
                 navController.navigate(QuizScreens.CategoryScreen.name)
             }
         }
@@ -33,13 +34,16 @@ fun QuizNavigation() {
             CategoryScreen(viewModel = viewModel, navController = navController)
         }
         composable(route = QuizScreens.DifficultyLevelScreen.name) {
-            DifficultyLevelScreen()
+            DifficultyLevelScreen(viewModel = viewModel, navController = navController)
         }
         composable(route = QuizScreens.ConfirmationScreen.name) {
-            ConfirmationScreen()
+            ConfirmationScreen(viewModel = viewModel, navController = navController)
         }
         composable(route = QuizScreens.QuizPlaygroundScreen.name) {
-            QuizPlaygroundScreen()
+            QuizPlaygroundScreen(viewModel = viewModel, navController = navController)
+        }
+        composable(route = QuizScreens.ResultScreen.name) {
+            ResultScreen(viewModel = viewModel, navController = navController)
         }
 
     }
